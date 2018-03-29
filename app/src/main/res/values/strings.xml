@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Unsplash Viewer</string>
+    <string name="splashImageDescription">splashImage</string>
+</resources>
