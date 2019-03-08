@@ -13,6 +13,7 @@ open class CustomImageViewTarget<R>(view: ImageView) : CustomViewTarget<ImageVie
     }
 
     override fun onResourceReady(resource: R, transition: Transition<in R>?) {
+        onResourceReady(resource)
     }
 
     open fun onResourceReady(resource: R) {
