@@ -29,8 +29,8 @@ class ImageActivity : BaseActivity() {
 
     companion object {
         const val IMAGE_ENTITY = "image_entity"
-        const val WRITE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        const val READ_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
+        private const val WRITE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        private const val READ_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
     private lateinit var imageEntity: ImageEntity
