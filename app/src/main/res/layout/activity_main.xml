@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress AndroidDomInspection -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:animateLayoutChanges="true"
-	android:background="@color/black_75">
+	android:background="@color/black_75"
+	>
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:id="@+id/appBarLayout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:theme="@style/AppTheme.AppBarOverlay"
-		app:layout_scrollFlags="enterAlways|scroll">
+		app:layout_scrollFlags="enterAlways|scroll"
+		>
 
 		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_scrollFlags="enterAlways|scroll">
+			app:layout_scrollFlags="enterAlways|scroll"
+			>
 
 			<androidx.appcompat.widget.Toolbar
 				android:id="@+id/toolbar"
@@ -26,7 +30,8 @@
 				android:background="?attr/colorPrimary"
 				app:popupTheme="@style/AppTheme.PopupOverlay"
 				app:subtitleTextAppearance="@style/SubtitleAppearance"
-				app:titleTextAppearance="@style/TitleAppearance" />
+				app:titleTextAppearance="@style/TitleAppearance"
+				/>
 
 			<androidx.appcompat.widget.Toolbar
 				android:id="@+id/searchToolbar"
@@ -35,10 +40,10 @@
 				android:background="@color/white"
 				android:visibility="invisible"
 				app:collapseIcon="@drawable/ic_arrow_left_black"
-				app:titleTextColor="@color/colorPrimary" />
+				app:titleTextColor="@color/colorPrimary"
+				/>
 
 		</FrameLayout>
-
 
 	</com.google.android.material.appbar.AppBarLayout>
 
@@ -46,16 +51,15 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
-		app:layout_behavior="@string/appbar_scrolling_view_behavior">
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
+		>
 
 		<androidx.recyclerview.widget.RecyclerView
-
 			android:id="@+id/imageRecycler"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
 			app:layout_constraintBottom_toTopOf="@+id/progressBar"
 			app:layout_constraintTop_toTopOf="parent"
-
 			/>
 
 		<ProgressBar
@@ -66,9 +70,9 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
-			tools:visibility="visible" />
+			tools:visibility="visible"
+			/>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

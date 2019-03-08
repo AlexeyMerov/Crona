@@ -3,4 +3,5 @@
 	<string name="toolbar_title">Popular</string>
 	<string name="share_title">Share Image</string>
 	<string name="download_title">Downloading image</string>
+	<string name="image_description">RandomPicture</string>
 </resources>
