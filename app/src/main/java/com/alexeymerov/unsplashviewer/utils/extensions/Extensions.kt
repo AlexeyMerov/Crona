@@ -24,3 +24,5 @@ interface AutoUpdatableAdapterSet<T> {
 }
 
 fun Int.dpToPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+fun currentMillis() = System.currentTimeMillis()

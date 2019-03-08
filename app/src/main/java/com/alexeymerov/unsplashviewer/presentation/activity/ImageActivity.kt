@@ -19,6 +19,7 @@ import com.alexeymerov.unsplashviewer.presentation.base.BaseActivity
 import com.alexeymerov.unsplashviewer.utils.CustomImageViewTarget
 import com.alexeymerov.unsplashviewer.utils.GlideApp
 import com.alexeymerov.unsplashviewer.utils.SilentTransitionListener
+import com.alexeymerov.unsplashviewer.utils.extensions.currentMillis
 import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_image.*
 import java.io.File
@@ -28,6 +29,8 @@ class ImageActivity : BaseActivity() {
 
     companion object {
         const val IMAGE_ENTITY = "image_entity"
+        const val WRITE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        const val READ_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
     private lateinit var imageEntity: ImageEntity
@@ -118,11 +121,16 @@ class ImageActivity : BaseActivity() {
 
     private fun saveImage() {
         checkPermissions {
+            createFolderIfNeeded()
+
             val request = DownloadManager.Request(Uri.parse(imageEntity.urls.raw)).apply {
                 setTitle(getString(R.string.download_title))
+                setMimeType("image/jpeg")
                 allowScanningByMediaScanner()
-                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, getString(R.string.app_name))
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                val fileName = "IMG_${currentMillis()}.jpg"
+                val subPath = getString(R.string.app_name) + File.separator + fileName
+                setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, subPath)
             }
 
             val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -130,13 +138,18 @@ class ImageActivity : BaseActivity() {
         }
     }
 
+    private fun createFolderIfNeeded() {
+        val pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val pathName = pictureDirectory.absolutePath + "/" + getString(R.string.app_name)
+        val finalFolder = File(pathName)
+        if (!finalFolder.exists()) finalFolder.mkdir()
+    }
+
     private inline fun checkPermissions(crossinline f: () -> Unit) {
         RxPermissions(this).apply {
             when {
-                isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        && isGranted(Manifest.permission.READ_EXTERNAL_STORAGE) -> f.invoke()
-                else -> request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                isGranted(WRITE_PERMISSION) && isGranted(READ_PERMISSION) -> f.invoke()
+                else -> request(WRITE_PERMISSION, READ_PERMISSION)
                         .subscribe { isGranted -> if (isGranted) f.invoke() }
             }
         }
