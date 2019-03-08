@@ -6,11 +6,11 @@ import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import com.alexeymerov.unsplashviewer.R
-import com.alexeymerov.unsplashviewer.data.database.entity.ImageEntity
+import com.alexeymerov.unsplashviewer.data.entity.ImageEntity
 import com.alexeymerov.unsplashviewer.presentation.adapter.ImageRecyclerAdapter.ViewHolder
 import com.alexeymerov.unsplashviewer.utils.GlideApp
 import com.alexeymerov.unsplashviewer.utils.GlideRequests
-import com.alexeymerov.unsplashviewer.utils.inflate
+import com.alexeymerov.unsplashviewer.utils.extensions.inflate
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions
@@ -41,16 +41,16 @@ class ImageRecyclerAdapter() : BaseRecyclerAdapter<ImageEntity, ViewHolder>() {
         holder.bind(items.elementAt(position))
     }
 
-    abstract inner class ViewHolder(override val containerView: View?) : BaseViewHolder<ImageEntity>(containerView) {
+    abstract inner class ViewHolder(override val containerView: View) : BaseViewHolder<ImageEntity>(containerView) {
         override fun bind(currentItem: ImageEntity) {
             // do something base things
         }
     }
 
-    inner class ImageViewHolder(containerView: View?) : ViewHolder(containerView) {
+    inner class ImageViewHolder(containerView: View) : ViewHolder(containerView) {
         override fun bind(currentItem: ImageEntity) {
             super.bind(currentItem)
-            containerView?.apply {
+            containerView.apply {
                 glideRequests.setDefaultRequestOptions(RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
                         .load(currentItem.urls.thumb)
                         .dontTransform()

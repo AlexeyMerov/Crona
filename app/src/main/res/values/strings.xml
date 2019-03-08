@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">Unsplash Viewer</string>
-    <string name="splashImageDescription">splashImage</string>
+	<string name="app_name">Unsplash Viewer</string>
+	<string name="toolbar_title">Popular</string>
+	<string name="share_title">Share Image</string>
+	<string name="download_title">Downloading image</string>
 </resources>

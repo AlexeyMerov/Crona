@@ -10,63 +10,64 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.content.FileProvider
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.FileProvider
 import com.alexeymerov.unsplashviewer.R
-import com.alexeymerov.unsplashviewer.data.database.entity.ImageEntity
+import com.alexeymerov.unsplashviewer.data.entity.ImageEntity
 import com.alexeymerov.unsplashviewer.presentation.base.BaseActivity
+import com.alexeymerov.unsplashviewer.utils.CustomImageViewTarget
 import com.alexeymerov.unsplashviewer.utils.GlideApp
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
+import com.alexeymerov.unsplashviewer.utils.SilentTransitionListener
 import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_image.*
 import java.io.File
 
 
-const val IMAGE_ENTITY = "image_entity"
-
 class ImageActivity : BaseActivity() {
+
+    companion object {
+        const val IMAGE_ENTITY = "image_entity"
+    }
 
     private lateinit var imageEntity: ImageEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
-        initializeToolbar("", true, R.drawable.ic_arrow_back_white)
+        initViews()
+        parseArguments()
         prepareImage()
+    }
+
+    private fun initViews() {
+        initToolbar(enableHomeButton = true, iconRes = R.drawable.ic_arrow_back_white)
+        fullImage.setOnClickListener { toggleToolbarVisibility() }
+    }
+
+    private fun parseArguments() {
+        imageEntity = intent.getParcelableExtra(IMAGE_ENTITY)
     }
 
     private fun prepareImage() {
         postponeEnterTransition()
 
-        imageEntity = intent.getParcelableExtra(IMAGE_ENTITY)
-
         GlideApp.with(this)
                 .load(imageEntity.urls.thumb)
                 .onlyRetrieveFromCache(true)
                 .error(ColorDrawable(Color.parseColor(imageEntity.color)))
-                .into(object : SimpleTarget<Drawable>() {
-                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                .into(object : CustomImageViewTarget<Drawable>(fullImage) {
+                    override fun onResourceReady(resource: Drawable) {
                         fullImage.setImageDrawable(resource)
                         startPostponedEnterTransition()
                     }
                 })
-        window.sharedElementEnterTransition.addListener(object : android.transition.Transition.TransitionListener {
-            override fun onTransitionResume(transition: android.transition.Transition?) {}
 
-            override fun onTransitionPause(transition: android.transition.Transition?) {}
-
-            override fun onTransitionCancel(transition: android.transition.Transition?) {}
-
-            override fun onTransitionStart(transition: android.transition.Transition?) {}
-
-            override fun onTransitionEnd(transition: android.transition.Transition?) {
+        window.sharedElementEnterTransition.addListener(object : SilentTransitionListener() {
+            override fun onTransitionEnd() {
                 loadFullImage()
             }
         })
-
-        fullImage.setOnClickListener { toggleToolbarVisibility() }
     }
 
     private fun loadFullImage() {
@@ -97,27 +98,28 @@ class ImageActivity : BaseActivity() {
                 .asFile()
                 .load(imageEntity.urls.regular)
                 .onlyRetrieveFromCache(true)
-                .into(object : SimpleTarget<File>() {
-                    override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-                        val uriForFile = FileProvider.getUriForFile(this@ImageActivity,
-                                "com.alexeymerov.unsplashviewer.provider",
-                                resource)
-
-                        val shareIntent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            type = "image/jpeg"
-                            putExtra(Intent.EXTRA_STREAM, uriForFile)
-                        }
-
-                        startActivity(Intent.createChooser(shareIntent, "Share Image"))
+                .into(object : CustomImageViewTarget<File>(fullImage) {
+                    override fun onResourceReady(resource: File) {
+                        shareImage(resource)
                     }
                 })
+    }
+
+    private fun shareImage(resource: File) {
+        val authority = "com.alexeymerov.unsplashviewer.provider"
+        val uriForFile = FileProvider.getUriForFile(this, authority, resource)
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "image/jpeg"
+            putExtra(Intent.EXTRA_STREAM, uriForFile)
+        }
+
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_title)))
     }
 
     private fun saveImage() {
         checkPermissions {
             val request = DownloadManager.Request(Uri.parse(imageEntity.urls.raw)).apply {
-                setTitle("Downloading image")
+                setTitle(getString(R.string.download_title))
                 allowScanningByMediaScanner()
                 setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, getString(R.string.app_name))
@@ -129,15 +131,15 @@ class ImageActivity : BaseActivity() {
     }
 
     private inline fun checkPermissions(crossinline f: () -> Unit) {
-        val rxPermissions = RxPermissions(this)
-        if (rxPermissions.isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                && rxPermissions.isGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            f.invoke()
-        } else rxPermissions.request(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe({ isGranted -> if (isGranted) f.invoke() })
+        RxPermissions(this).apply {
+            when {
+                isGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        && isGranted(Manifest.permission.READ_EXTERNAL_STORAGE) -> f.invoke()
+                else -> request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .subscribe { isGranted -> if (isGranted) f.invoke() }
+            }
+        }
     }
-
 }
 

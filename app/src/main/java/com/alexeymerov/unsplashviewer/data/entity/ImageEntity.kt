@@ -1,22 +1,15 @@
-package com.alexeymerov.unsplashviewer.data.database.entity
+package com.alexeymerov.unsplashviewer.data.entity
 
-import android.arch.persistence.room.Embedded
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
 import android.os.Parcelable
-import com.alexeymerov.unsplashviewer.data.database.dao.ImageDAO
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
-@Entity(tableName = ImageDAO.TABLE_NAME)
 @Parcelize
 data class ImageEntity(
 
-        @PrimaryKey
         @Json(name = "id")
         var id: String,
 
-        @Embedded
         @Json(name = "urls")
         var urls: Urls,
 
@@ -31,9 +24,9 @@ data class ImageEntity(
 
         @Json(name = "height")
         var height: Int
+
 ) : Parcelable
 
-@Entity(tableName = "image_urls")
 @Parcelize
 data class Urls(
 
@@ -45,4 +38,5 @@ data class Urls(
 
         @Json(name = "regular")
         var regular: String
+
 ) : Parcelable
