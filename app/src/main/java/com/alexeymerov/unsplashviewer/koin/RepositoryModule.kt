@@ -1,31 +1,24 @@
 package com.alexeymerov.unsplashviewer.koin
 
-import android.arch.persistence.room.Room
 import android.content.Context
-import com.alexeymerov.unsplashviewer.data.database.ApplicationDatabase
 import com.alexeymerov.unsplashviewer.data.repository.ImageRepository
 import com.alexeymerov.unsplashviewer.data.server.ApiService
 import com.alexeymerov.unsplashviewer.data.server.ServerCommunicator
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
-import org.koin.android.ext.koin.androidApplication
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-val repositoryModule: Module = applicationContext {
-    bean { provideSharedPrefs(androidApplication().applicationContext) }
-    bean { provideDatabase(androidApplication().applicationContext) }
-    bean { provideServerCommunicator() }
+val repositoryModule = module {
+    single { provideSharedPrefs(androidContext()) }
+    single { provideServerCommunicator() }
 
-    bean { ImageRepository(get(), get()) }
+    single { ImageRepository(get()) }
 }
-
-private fun provideDatabase(context: Context) = Room.databaseBuilder(context, ApplicationDatabase::class.java, "unsplash-database")
-        .build()
 
 private fun provideSharedPrefs(context: Context) = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 

@@ -1,10 +1,10 @@
 package com.alexeymerov.unsplashviewer.koin
 
 import com.alexeymerov.unsplashviewer.domain.ImageViewModel
-import org.koin.android.architecture.ext.viewModel
+import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.Module
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 
-val viewModelModule: Module = applicationContext {
+val viewModelModule: Module = module {
     viewModel { ImageViewModel(get(), get()) }
 }

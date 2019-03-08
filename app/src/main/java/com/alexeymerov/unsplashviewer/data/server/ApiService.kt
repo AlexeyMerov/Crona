@@ -1,6 +1,6 @@
 package com.alexeymerov.unsplashviewer.data.server
 
-import com.alexeymerov.unsplashviewer.data.database.entity.ImageEntity
+import com.alexeymerov.unsplashviewer.data.entity.ImageEntity
 import com.alexeymerov.unsplashviewer.data.server.pojo.response.SearchResponse
 import io.reactivex.Single
 import retrofit2.http.GET

@@ -1,12 +1,13 @@
 package com.alexeymerov.unsplashviewer.domain
 
 import android.app.Application
-import android.arch.lifecycle.MutableLiveData
-import com.alexeymerov.unsplashviewer.data.database.entity.ImageEntity
+import androidx.lifecycle.MutableLiveData
+import com.alexeymerov.unsplashviewer.data.entity.ImageEntity
 import com.alexeymerov.unsplashviewer.data.repository.ImageRepository
 import java.util.*
 
-class ImageViewModel(application: Application, private val repository: ImageRepository) : BaseViewModel(application) {
+class ImageViewModel(application: Application, private val repository: ImageRepository)
+    : BaseViewModel(application, repository) {
 
     val notLocalImages: MutableLiveData<LinkedHashSet<ImageEntity>> by lazy { loadImages() }
 

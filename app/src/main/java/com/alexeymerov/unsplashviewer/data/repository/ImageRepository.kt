@@ -1,13 +1,11 @@
 package com.alexeymerov.unsplashviewer.data.repository
 
-import android.arch.lifecycle.MutableLiveData
-import com.alexeymerov.unsplashviewer.data.database.ApplicationDatabase
-import com.alexeymerov.unsplashviewer.data.database.entity.ImageEntity
+import androidx.lifecycle.MutableLiveData
+import com.alexeymerov.unsplashviewer.data.entity.ImageEntity
 import com.alexeymerov.unsplashviewer.data.server.ServerCommunicator
 
 
-class ImageRepository(private val serverCommunicator: ServerCommunicator,
-                      private val database: ApplicationDatabase) {
+class ImageRepository(private val serverCommunicator: ServerCommunicator) : BaseRepository() {
 
     private val notLocalImages: MutableLiveData<LinkedHashSet<ImageEntity>> by lazy { initLiveData() }
 
@@ -17,7 +15,7 @@ class ImageRepository(private val serverCommunicator: ServerCommunicator,
     fun loadImages(): MutableLiveData<LinkedHashSet<ImageEntity>> {
         serverCommunicator.getAll().subscribe({
             notLocalImages.postValue(LinkedHashSet(it))
-        }, Throwable::printStackTrace)
+        }, ::handleError).toComposite()
         return notLocalImages
     }
 
@@ -25,20 +23,23 @@ class ImageRepository(private val serverCommunicator: ServerCommunicator,
         serverCommunicator.getAll(page).subscribe({
             notLocalImages.value?.addAll(it)
             notLocalImages.postValue(notLocalImages.value)
-        }, Throwable::printStackTrace)
+        }, ::handleError).toComposite()
     }
 
     fun searchImages(query: String) {
         serverCommunicator.searchImages(query).subscribe({
             notLocalImages.postValue(LinkedHashSet(it))
-        }, Throwable::printStackTrace)
+        }, ::handleError).toComposite()
     }
 
     fun searchImagesNext(query: String, page: Int) {
         serverCommunicator.searchImages(query, page).subscribe({
             notLocalImages.value?.addAll(it)
             notLocalImages.postValue(notLocalImages.value)
-        }, Throwable::printStackTrace)
+        }, ::handleError).toComposite()
     }
 
+    private fun handleError(throwable: Throwable) {
+        throwable.printStackTrace()
+    }
 }

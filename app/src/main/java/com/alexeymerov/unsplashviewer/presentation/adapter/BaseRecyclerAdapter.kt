@@ -1,8 +1,8 @@
 package com.alexeymerov.unsplashviewer.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.alexeymerov.unsplashviewer.utils.AutoUpdatableAdapterSet
+import androidx.recyclerview.widget.RecyclerView
+import com.alexeymerov.unsplashviewer.utils.extensions.AutoUpdatableAdapterSet
 import kotlinx.android.extensions.LayoutContainer
 import kotlin.properties.Delegates
 
@@ -22,7 +22,7 @@ abstract class BaseRecyclerAdapter<T : Any, VH : BaseViewHolder<T>> : RecyclerVi
     abstract fun proceedPayloads(payloads: MutableList<Any>, holder: VH, position: Int)
 }
 
-abstract class BaseViewHolder<in T : Any>(override val containerView: View?)
+abstract class BaseViewHolder<in T : Any>(override val containerView: View)
     : RecyclerView.ViewHolder(containerView), LayoutContainer {
     abstract fun bind(currentItem: T)
 }
