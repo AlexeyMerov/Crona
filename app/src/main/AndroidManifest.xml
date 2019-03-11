@@ -1,13 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	package="com.alexeymerov.unsplashviewer">
+	package="com.alexeymerov.crona">
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 	<application
-		android:name=".App"
+		android:name="com.alexeymerov.crona.App"
 		android:allowBackup="false"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
@@ -16,18 +16,18 @@
 		android:theme="@style/AppTheme"
 		tools:ignore="GoogleAppIndexingWarning">
 
-		<activity android:name=".presentation.activity.MainActivity">
+		<activity android:name="com.alexeymerov.crona.presentation.activity.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".presentation.activity.ImageActivity" />
+		<activity android:name="com.alexeymerov.crona.presentation.activity.ImageActivity" />
 
 		<provider
-			android:name=".utils.GenericFileProvider"
-			android:authorities="com.alexeymerov.unsplashviewer.provider"
+			android:name="com.alexeymerov.crona.utils.GenericFileProvider"
+			android:authorities="com.alexeymerov.crona.provider"
 			android:exported="false"
 			android:grantUriPermissions="true">
 			<meta-data
