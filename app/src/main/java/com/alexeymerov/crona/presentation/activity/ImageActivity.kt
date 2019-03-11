@@ -109,7 +109,7 @@ class ImageActivity : BaseActivity() {
     }
 
     private fun shareImage(resource: File) {
-        val authority = "com.alexeymerov.unsplashviewer.provider"
+        val authority = "com.alexeymerov.crona.provider"
         val uriForFile = FileProvider.getUriForFile(this, authority, resource)
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "image/jpeg"
