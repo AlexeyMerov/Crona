@@ -6,13 +6,13 @@
 	<item
 		android:id="@+id/shareImage"
 		android:icon="@drawable/ic_share_white"
-		android:title="Share Image"
+		android:title="@string/share_image"
 		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/saveImage"
 		android:icon="@drawable/ic_file_download_white"
-		android:title="Save Image"
+		android:title="@string/save_image"
 		app:showAsAction="always"
 		tools:ignore="AlwaysShowAction" />
 

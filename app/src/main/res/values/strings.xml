@@ -1,7 +1,10 @@
 <resources>
-	<string name="app_name">Unsplash Viewer</string>
+	<string name="app_name">Crona</string>
 	<string name="toolbar_title">Popular</string>
 	<string name="share_title">Share Image</string>
 	<string name="download_title">Downloading image</string>
 	<string name="image_description">RandomPicture</string>
+	<string name="search">Search</string>
+	<string name="save_image">Save Image</string>
+	<string name="share_image">Share Image</string>
 </resources>
