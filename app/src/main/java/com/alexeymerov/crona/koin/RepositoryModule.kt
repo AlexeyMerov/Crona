@@ -25,10 +25,10 @@ private fun provideSharedPrefs(context: Context) = context.getSharedPreferences(
 private const val API_URL = "https://api.unsplash.com/"
 private fun provideServerCommunicator(): ServerCommunicator {
     val okHttpClientBuilder = OkHttpClient.Builder()
-            .connectionPool(ConnectionPool(5, 30, TimeUnit.SECONDS))
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+        .connectionPool(ConnectionPool(5, 30, TimeUnit.SECONDS))
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
 
 //    if (BuildConfig.DEBUG) {
 //        val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -38,9 +38,9 @@ private fun provideServerCommunicator(): ServerCommunicator {
 //    }
 
     val retrofitBuilder = Retrofit.Builder()
-            .client(okHttpClientBuilder.build())
-            .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .client(okHttpClientBuilder.build())
+        .addConverterFactory(MoshiConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
 
     val retrofit = retrofitBuilder.baseUrl(API_URL).build()
     val apiService = retrofit.create<ApiService>(ApiService::class.java)

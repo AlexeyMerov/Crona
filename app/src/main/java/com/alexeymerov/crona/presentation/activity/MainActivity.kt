@@ -112,22 +112,22 @@ class MainActivity : BaseActivity() {
         txtSearch.setTextColor(getColorEx(R.color.colorPrimary))
 
         searchDisposable = RxSearchView.queryTextChanges(searchView)
-                .skipInitialValue()
-                .filter { !it.isEmpty() }
-                .debounce(500, TimeUnit.MILLISECONDS)
-                .subscribe {
-                    lastQuery = it.toString()
-                    paginationListener.resetState()
-                    viewModel.searchImages(it.toString())
-                }
+            .skipInitialValue()
+            .filter { it.isNotEmpty() }
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .subscribe {
+                lastQuery = it.toString()
+                paginationListener.resetState()
+                viewModel.searchImages(it.toString())
+            }
     }
 
     private fun initLayoutManager() = GridLayoutManager(this, 3)
-            .apply {
-                isMeasurementCacheEnabled = true
-                isItemPrefetchEnabled = true
-                orientation = RecyclerView.VERTICAL
-            }
+        .apply {
+            isMeasurementCacheEnabled = true
+            isItemPrefetchEnabled = true
+            orientation = RecyclerView.VERTICAL
+        }
 
     private fun initRecyclerAdapter() = ImageRecyclerAdapter(this, ::onImageClick)
 

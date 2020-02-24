@@ -56,15 +56,15 @@ class ImageActivity : BaseActivity() {
         postponeEnterTransition()
 
         GlideApp.with(this)
-                .load(imageEntity.urls.thumb)
-                .onlyRetrieveFromCache(true)
-                .error(ColorDrawable(Color.parseColor(imageEntity.color)))
-                .into(object : CustomImageViewTarget<Drawable>(fullImage) {
-                    override fun onResourceReady(resource: Drawable) {
-                        fullImage.setImageDrawable(resource)
-                        startPostponedEnterTransition()
-                    }
-                })
+            .load(imageEntity.urls.thumb)
+            .onlyRetrieveFromCache(true)
+            .error(ColorDrawable(Color.parseColor(imageEntity.color)))
+            .into(object : CustomImageViewTarget<Drawable>(fullImage) {
+                override fun onResourceReady(resource: Drawable) {
+                    fullImage.setImageDrawable(resource)
+                    startPostponedEnterTransition()
+                }
+            })
 
         window.sharedElementEnterTransition.addListener(object : SilentTransitionListener() {
             override fun onTransitionEnd() {
@@ -76,9 +76,9 @@ class ImageActivity : BaseActivity() {
     private fun loadFullImage() {
         fullImage.post {
             GlideApp.with(this)
-                    .load(imageEntity.urls.regular)
-                    .placeholder(fullImage.drawable)
-                    .into(fullImage)
+                .load(imageEntity.urls.regular)
+                .placeholder(fullImage.drawable)
+                .into(fullImage)
         }
     }
 
@@ -98,14 +98,14 @@ class ImageActivity : BaseActivity() {
 
     private fun shareImage() {
         GlideApp.with(this)
-                .asFile()
-                .load(imageEntity.urls.regular)
-                .onlyRetrieveFromCache(true)
-                .into(object : CustomImageViewTarget<File>(fullImage) {
-                    override fun onResourceReady(resource: File) {
-                        shareImage(resource)
-                    }
-                })
+            .asFile()
+            .load(imageEntity.urls.regular)
+            .onlyRetrieveFromCache(true)
+            .into(object : CustomImageViewTarget<File>(fullImage) {
+                override fun onResourceReady(resource: File) {
+                    shareImage(resource)
+                }
+            })
     }
 
     private fun shareImage(resource: File) {
@@ -150,7 +150,7 @@ class ImageActivity : BaseActivity() {
             when {
                 isGranted(WRITE_PERMISSION) && isGranted(READ_PERMISSION) -> f.invoke()
                 else -> request(WRITE_PERMISSION, READ_PERMISSION)
-                        .subscribe { isGranted -> if (isGranted) f.invoke() }
+                    .subscribe { isGranted -> if (isGranted) f.invoke() }
             }
         }
     }

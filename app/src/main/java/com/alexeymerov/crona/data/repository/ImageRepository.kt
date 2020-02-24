@@ -10,7 +10,7 @@ class ImageRepository(private val serverCommunicator: ServerCommunicator) : Base
     private val notLocalImages: MutableLiveData<LinkedHashSet<ImageEntity>> by lazy { initLiveData() }
 
     private fun initLiveData() = MutableLiveData<LinkedHashSet<ImageEntity>>()
-            .apply { value = LinkedHashSet() }
+        .apply { value = LinkedHashSet() }
 
     fun loadImages(): MutableLiveData<LinkedHashSet<ImageEntity>> {
         serverCommunicator.getAll().subscribe({

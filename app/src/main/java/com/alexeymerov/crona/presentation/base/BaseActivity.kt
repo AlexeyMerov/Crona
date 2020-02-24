@@ -8,9 +8,11 @@ import com.alexeymerov.crona.R
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    protected fun initToolbar(titleText: String? = null,
-                              enableHomeButton: Boolean = false,
-                              @DrawableRes iconRes: Int? = null) {
+    protected fun initToolbar(
+        titleText: String? = null,
+        enableHomeButton: Boolean = false,
+        @DrawableRes iconRes: Int? = null
+    ) {
         findViewById<Toolbar>(R.id.toolbar)?.apply {
             setSupportActionBar(this)
             setNavigationOnClickListener { onBackPressed() }

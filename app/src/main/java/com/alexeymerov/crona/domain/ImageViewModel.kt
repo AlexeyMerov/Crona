@@ -6,8 +6,7 @@ import com.alexeymerov.crona.data.entity.ImageEntity
 import com.alexeymerov.crona.data.repository.ImageRepository
 import java.util.*
 
-class ImageViewModel(application: Application, private val repository: ImageRepository)
-    : BaseViewModel(application, repository) {
+class ImageViewModel(application: Application, private val repository: ImageRepository) : BaseViewModel(application, repository) {
 
     val notLocalImages: MutableLiveData<LinkedHashSet<ImageEntity>> by lazy { loadImages() }
 
