@@ -44,12 +44,15 @@ class ImageActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        initToolbar(enableHomeButton = true, iconRes = R.drawable.ic_arrow_back_white)
         fullImage.setOnClickListener { toggleToolbarVisibility() }
     }
 
     private fun parseArguments() {
-        imageEntity = intent.getParcelableExtra(IMAGE_ENTITY)
+        try { // for some reason i've got a Null extra. The error disappeared itself but left the try/catch block
+            imageEntity = intent.getParcelableExtra(IMAGE_ENTITY)!!
+        } catch (e: NullPointerException) {
+            finish()
+        }
     }
 
     private fun prepareImage() {
@@ -78,7 +81,12 @@ class ImageActivity : BaseActivity() {
             GlideApp.with(this)
                 .load(imageEntity.urls.regular)
                 .placeholder(fullImage.drawable)
-                .into(fullImage)
+                .into(object : CustomImageViewTarget<Drawable>(fullImage) {
+                    override fun onResourceReady(resource: Drawable) {
+                        fullImage.setImageDrawable(resource)
+                        initToolbar(iconRes = R.drawable.ic_arrow_back_white, enableHomeButton = true)
+                    }
+                })
         }
     }
 

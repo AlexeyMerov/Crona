@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alexeymerov.crona.R
 import com.alexeymerov.crona.data.entity.ImageEntity
-import com.alexeymerov.crona.domain.ImageViewModel
+import com.alexeymerov.crona.domain.interfaces.IImageViewModel
 import com.alexeymerov.crona.presentation.adapter.ImageRecyclerAdapter
 import com.alexeymerov.crona.presentation.base.BaseActivity
 import com.alexeymerov.crona.utils.EndlessRecyclerViewScrollListener
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
 
-    private val viewModel by viewModel<ImageViewModel>()
+    private val viewModel by viewModel<IImageViewModel>()
     private val imageRecyclerAdapter by lazy { initRecyclerAdapter() }
     private val layoutManager by lazy { initLayoutManager() }
     private var isInSearch = false

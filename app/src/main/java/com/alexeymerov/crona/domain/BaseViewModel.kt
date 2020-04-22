@@ -10,9 +10,7 @@ abstract class BaseViewModel(
 ) : AndroidViewModel(application) {
 
     override fun onCleared() {
-        for (repo in repositories) {
-            repo?.clean()
-        }
+        for (repo in repositories) repo?.clean()
         super.onCleared()
     }
 }

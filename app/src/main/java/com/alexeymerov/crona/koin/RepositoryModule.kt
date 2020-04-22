@@ -2,6 +2,7 @@ package com.alexeymerov.crona.koin
 
 import android.content.Context
 import com.alexeymerov.crona.data.repository.ImageRepository
+import com.alexeymerov.crona.data.repository.interfaces.IImageRepository
 import com.alexeymerov.crona.data.server.ApiService
 import com.alexeymerov.crona.data.server.ServerCommunicator
 import okhttp3.ConnectionPool
@@ -17,7 +18,7 @@ val repositoryModule = module {
     single { provideSharedPrefs(androidContext()) }
     single { provideServerCommunicator() }
 
-    single { ImageRepository(get()) }
+    single { ImageRepository(get()) as IImageRepository }
 }
 
 private fun provideSharedPrefs(context: Context) = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
