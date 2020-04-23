@@ -1,7 +1,5 @@
 package com.alexeymerov.crona.presentation.activity
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Color
@@ -9,7 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewAnimationUtils
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
@@ -22,7 +19,7 @@ import com.alexeymerov.crona.domain.interfaces.IImageViewModel
 import com.alexeymerov.crona.presentation.adapter.ImageRecyclerAdapter
 import com.alexeymerov.crona.presentation.base.BaseActivity
 import com.alexeymerov.crona.utils.EndlessRecyclerViewScrollListener
-import com.alexeymerov.crona.utils.extensions.dpToPx
+import com.alexeymerov.crona.utils.extensions.circleReveal
 import com.alexeymerov.crona.utils.extensions.getColorEx
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
 import io.reactivex.disposables.Disposable
@@ -163,26 +160,4 @@ class MainActivity : BaseActivity() {
         startActivity(intent, options.toBundle())
     }
 
-    private fun circleReveal(view: View, needShow: Boolean) = circleReveal(view.id, needShow)
-
-    private fun circleReveal(viewId: Int, needShow: Boolean) {
-        val myView = findViewById<View>(viewId)
-        val width = myView.width
-        val centerX = width - 28.dpToPx()
-        val centerY = myView.height / 2
-        val startRadius = if (needShow) 0f else width.toFloat()
-        val endRadius = if (needShow) width.toFloat() else 0f
-        if (needShow) myView.visibility = View.VISIBLE
-
-        val anim = ViewAnimationUtils.createCircularReveal(myView, centerX, centerY, startRadius, endRadius)
-        anim.apply {
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (!needShow) myView.visibility = View.INVISIBLE
-                }
-            })
-            duration = 350L
-            start()
-        }
-    }
 }
