@@ -2,30 +2,22 @@ package com.alexeymerov.crona.presentation.activity
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alexeymerov.crona.R
 import com.alexeymerov.crona.data.entity.ImageEntity
 import com.alexeymerov.crona.domain.interfaces.IImageViewModel
+import com.alexeymerov.crona.presentation.activity.helper.SearchToolbarHandler
 import com.alexeymerov.crona.presentation.adapter.ImageRecyclerAdapter
 import com.alexeymerov.crona.presentation.base.BaseActivity
 import com.alexeymerov.crona.utils.EndlessRecyclerViewScrollListener
-import com.alexeymerov.crona.utils.extensions.circleReveal
-import com.alexeymerov.crona.utils.extensions.getColorEx
-import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.concurrent.TimeUnit
 
 
 class MainActivity : BaseActivity() {
@@ -33,12 +25,9 @@ class MainActivity : BaseActivity() {
     private val viewModel by viewModel<IImageViewModel>()
     private val imageRecyclerAdapter by lazy { initRecyclerAdapter() }
     private val layoutManager by lazy { initLayoutManager() }
-    private var isInSearch = false
-    private lateinit var searchMenu: Menu
-    private lateinit var menuItemSearch: MenuItem
-    private lateinit var lastQuery: String
-    private lateinit var searchDisposable: Disposable
+
     private lateinit var paginationListener: EndlessRecyclerViewScrollListener
+    private lateinit var searchToolbarHandler: SearchToolbarHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,15 +43,12 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_search) {
-            menuItemSearch.expandActionView()
-            circleReveal(searchToolbar, true)
-        }
+        searchToolbarHandler.onOptionsItemSelected(item)
         return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {
-        searchDisposable.dispose()
+        searchToolbarHandler.onDestroy()
         super.onDestroy()
     }
 
@@ -73,50 +59,15 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initSearchToolbar() {
-        searchToolbar.inflateMenu(R.menu.menu_search)
-        searchToolbar.setNavigationOnClickListener { circleReveal(searchToolbar, false) }
-
-        searchMenu = searchToolbar.menu
-        menuItemSearch = searchMenu.findItem(R.id.action_filter_search)
-        menuItemSearch.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                circleReveal(searchToolbar, true)
-                isInSearch = true
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                circleReveal(searchToolbar, false)
-                isInSearch = false
-                viewModel.loadImages()
-                return true
-            }
-        })
-        initSearchView()
-    }
-
-    private fun initSearchView() {
-        val searchView = searchMenu.findItem(R.id.action_filter_search)?.actionView as SearchView
-        searchView.isSubmitButtonEnabled = false
-        searchView.maxWidth = Integer.MAX_VALUE
-
-        val closeButton = searchView.findViewById(R.id.search_close_btn) as ImageView
-        closeButton.setImageResource(R.drawable.ic_close_black)
-
-        val txtSearch = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
-        txtSearch.hint = "Search..."
-        txtSearch.setHintTextColor(Color.DKGRAY)
-        txtSearch.setTextColor(getColorEx(R.color.colorPrimary))
-
-        searchDisposable = RxSearchView.queryTextChanges(searchView)
-            .skipInitialValue()
-            .filter { it.isNotEmpty() }
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .subscribe {
-                lastQuery = it.toString()
+        searchToolbarHandler = SearchToolbarHandler(searchToolbar, this,
+            onCollapse = {
                 paginationListener.resetState()
-                viewModel.searchImages(it.toString())
-            }
+                viewModel.loadImages()
+            },
+            onNextSearch = {
+                paginationListener.resetState()
+                viewModel.searchImages(it)
+            })
     }
 
     private fun initLayoutManager() = GridLayoutManager(this, 3)
@@ -132,8 +83,8 @@ class MainActivity : BaseActivity() {
         paginationListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 progressBar.visibility = View.VISIBLE
-                if (!isInSearch) viewModel.loadNext(page + 1) //api not allowed send page lower 1
-                else if (::lastQuery.isInitialized) viewModel.searchImagesNext(lastQuery, page + 1)
+                if (searchToolbarHandler.isInSearch) viewModel.searchImagesNext(searchToolbarHandler.lastQuery, page + 1)
+                else viewModel.loadNext(page + 1) //api not allowed send page lower 1
             }
         }
         imageRecycler.also {

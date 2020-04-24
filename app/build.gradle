@@ -83,6 +83,7 @@ dependencies {
 
     debugImplementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
     debugImplementation 'com.facebook.stetho:stetho:1.5.1'
+//    debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 
     //support
     implementation "com.google.android.material:material:${supportLib}"
