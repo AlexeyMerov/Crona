@@ -59,7 +59,7 @@ class ImageRecyclerAdapter() : BaseRecyclerAdapter<ImageEntity, ViewHolder>() {
                     .error(ColorDrawable(Color.parseColor(currentItem.color)))
                     .into(imageItem)
 
-                imageItem.setOnClickListener { onItemClicked.invoke(items.elementAt(adapterPosition), this) }
+                imageItem.setOnClickListener { onItemClicked.invoke(currentItem, this) }
             }
         }
     }

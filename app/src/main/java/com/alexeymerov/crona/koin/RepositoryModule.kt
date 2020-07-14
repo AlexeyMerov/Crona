@@ -1,8 +1,8 @@
 package com.alexeymerov.crona.koin
 
 import android.content.Context
-import com.alexeymerov.crona.data.repository.ImageRepository
-import com.alexeymerov.crona.data.repository.interfaces.IImageRepository
+import com.alexeymerov.crona.data.repository.image_repository.IImageRepository
+import com.alexeymerov.crona.data.repository.image_repository.ImageRepository
 import com.alexeymerov.crona.data.server.ApiService
 import com.alexeymerov.crona.data.server.ServerCommunicator
 import okhttp3.ConnectionPool

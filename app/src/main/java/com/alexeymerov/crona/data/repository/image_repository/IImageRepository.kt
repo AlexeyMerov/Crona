@@ -1,4 +1,4 @@
-package com.alexeymerov.crona.data.repository.interfaces
+package com.alexeymerov.crona.data.repository.image_repository
 
 import androidx.lifecycle.MutableLiveData
 import com.alexeymerov.crona.data.entity.ImageEntity

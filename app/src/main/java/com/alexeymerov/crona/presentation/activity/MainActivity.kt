@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alexeymerov.crona.R
 import com.alexeymerov.crona.data.entity.ImageEntity
 import com.alexeymerov.crona.domain.interfaces.IImageViewModel
-import com.alexeymerov.crona.presentation.activity.helper.SearchToolbarHandler
 import com.alexeymerov.crona.presentation.adapter.ImageRecyclerAdapter
 import com.alexeymerov.crona.presentation.base.BaseActivity
 import com.alexeymerov.crona.utils.EndlessRecyclerViewScrollListener
+import com.alexeymerov.crona.utils.SearchToolbarHandler
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -106,7 +106,15 @@ class MainActivity : BaseActivity() {
 
     private fun onImageClick(image: ImageEntity, view: View) {
         val intent = Intent(this, ImageActivity::class.java)
-        intent.putExtra(ImageActivity.IMAGE_ENTITY, image)
+
+        val data = Bundle().apply {
+            putString(ImageActivity.IMAGE_THUMB, image.urls.thumb)
+            putString(ImageActivity.IMAGE_REGULAR, image.urls.regular)
+            putString(ImageActivity.IMAGE_COLOR, image.color)
+        }
+
+        intent.putExtra(ImageActivity.IMAGE_BUNDLE, data)
+
         val options = ActivityOptions.makeSceneTransitionAnimation(this, view, "image")
         startActivity(intent, options.toBundle())
     }

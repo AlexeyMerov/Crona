@@ -1,4 +1,4 @@
-package com.alexeymerov.crona.presentation.activity.helper
+package com.alexeymerov.crona.utils
 
 import android.app.Activity
 import android.graphics.Color

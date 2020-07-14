@@ -1,10 +1,7 @@
 package com.alexeymerov.crona.data.entity
 
-import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class ImageEntity(
 
     @Json(name = "id")
@@ -25,9 +22,8 @@ data class ImageEntity(
     @Json(name = "height")
     var height: Int
 
-) : Parcelable
+)
 
-@Parcelize
 data class Urls(
 
     @Json(name = "thumb")
@@ -39,4 +35,4 @@ data class Urls(
     @Json(name = "regular")
     var regular: String
 
-) : Parcelable
+)

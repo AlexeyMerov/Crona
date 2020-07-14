@@ -14,7 +14,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.FileProvider
 import com.alexeymerov.crona.R
-import com.alexeymerov.crona.data.entity.ImageEntity
 import com.alexeymerov.crona.presentation.base.BaseActivity
 import com.alexeymerov.crona.utils.CustomImageViewTarget
 import com.alexeymerov.crona.utils.GlideApp
@@ -28,12 +27,25 @@ import java.io.File
 class ImageActivity : BaseActivity() {
 
     companion object {
-        const val IMAGE_ENTITY = "image_entity"
+        const val IMAGE_BUNDLE = "image_bundle"
+
+        const val IMAGE_THUMB = "image_thumb"
+        const val IMAGE_REGULAR = "image_regular"
+        const val IMAGE_COLOR = "image_color"
+
+        private const val TYPE_IMAGE_JPEG = "image/jpeg"
+        private const val IMAGE_PREFIX = "IMG_"
+        private const val IMAGE_EXTENSION_JPG = ".jpg"
+        private const val SEPARATOR = "/"
+        private const val APP_PROVIDER_PATH = "com.alexeymerov.crona.provider"
+
         private const val WRITE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE
         private const val READ_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
-    private lateinit var imageEntity: ImageEntity
+    private lateinit var urlThumb: String
+    private lateinit var urlRegular: String
+    private lateinit var color: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +60,10 @@ class ImageActivity : BaseActivity() {
     }
 
     private fun parseArguments() {
-        try { // for some reason i've got a Null extra. The error disappeared itself but left the try/catch block
-            imageEntity = intent.getParcelableExtra(IMAGE_ENTITY)!!
-        } catch (e: NullPointerException) {
-            finish()
+        intent.getBundleExtra(IMAGE_BUNDLE)?.apply {
+            urlThumb = getString(IMAGE_THUMB)!!
+            urlRegular = getString(IMAGE_REGULAR)!!
+            color = getString(IMAGE_COLOR)!!
         }
     }
 
@@ -59,9 +71,9 @@ class ImageActivity : BaseActivity() {
         postponeEnterTransition()
 
         GlideApp.with(this)
-            .load(imageEntity.urls.thumb)
+            .load(urlThumb)
             .onlyRetrieveFromCache(true)
-            .error(ColorDrawable(Color.parseColor(imageEntity.color)))
+            .error(ColorDrawable(Color.parseColor(color)))
             .into(object : CustomImageViewTarget<Drawable>(fullImage) {
                 override fun onResourceReady(resource: Drawable) {
                     fullImage.setImageDrawable(resource)
@@ -79,7 +91,7 @@ class ImageActivity : BaseActivity() {
     private fun loadFullImage() {
         fullImage.post {
             GlideApp.with(this)
-                .load(imageEntity.urls.regular)
+                .load(urlRegular)
                 .placeholder(fullImage.drawable)
                 .into(object : CustomImageViewTarget<Drawable>(fullImage) {
                     override fun onResourceReady(resource: Drawable) {
@@ -95,8 +107,8 @@ class ImageActivity : BaseActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.home -> finishAfterTransition()
             R.id.shareImage -> shareImage()
             R.id.saveImage -> saveImage()
@@ -107,7 +119,7 @@ class ImageActivity : BaseActivity() {
     private fun shareImage() {
         GlideApp.with(this)
             .asFile()
-            .load(imageEntity.urls.regular)
+            .load(urlRegular)
             .onlyRetrieveFromCache(true)
             .into(object : CustomImageViewTarget<File>(fullImage) {
                 override fun onResourceReady(resource: File) {
@@ -117,10 +129,10 @@ class ImageActivity : BaseActivity() {
     }
 
     private fun shareImage(resource: File) {
-        val authority = "com.alexeymerov.crona.provider"
+        val authority = APP_PROVIDER_PATH
         val uriForFile = FileProvider.getUriForFile(this, authority, resource)
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/jpeg"
+            type = TYPE_IMAGE_JPEG
             putExtra(Intent.EXTRA_STREAM, uriForFile)
         }
 
@@ -131,12 +143,11 @@ class ImageActivity : BaseActivity() {
         checkPermissions {
             createFolderIfNeeded()
 
-            val request = DownloadManager.Request(Uri.parse(imageEntity.urls.raw)).apply {
+            val request = DownloadManager.Request(Uri.parse(urlRegular)).apply {
                 setTitle(getString(R.string.download_title))
-                setMimeType("image/jpeg")
-                allowScanningByMediaScanner()
+                setMimeType(TYPE_IMAGE_JPEG)
                 setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                val fileName = "IMG_${currentMillis()}.jpg"
+                val fileName = IMAGE_PREFIX + currentMillis() + IMAGE_EXTENSION_JPG
                 val subPath = getString(R.string.app_name) + File.separator + fileName
                 setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, subPath)
             }
@@ -147,8 +158,8 @@ class ImageActivity : BaseActivity() {
     }
 
     private fun createFolderIfNeeded() {
-        val pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        val pathName = pictureDirectory.absolutePath + "/" + getString(R.string.app_name)
+        val pictureDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val pathName = pictureDirectory?.absolutePath + SEPARATOR + getString(R.string.app_name)
         val finalFolder = File(pathName)
         if (!finalFolder.exists()) finalFolder.mkdir()
     }
