@@ -13,9 +13,9 @@ abstract class BaseServerCommunicator {
 
     protected fun <T> singleTransformer(): SingleTransformer<T, T> = SingleTransformer {
         it.subscribeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .timeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-                .retry(DEFAULT_RETRY_ATTEMPTS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .timeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .retry(DEFAULT_RETRY_ATTEMPTS)
     }
 }

@@ -14,15 +14,19 @@ interface ApiService {
 
     @Headers(FIRST_HEADER, SECOND_HEADER)
     @GET("/photos")
-    fun getAll(@Query("page") page: Int = 1,
-               @Query("per_page") countPerPage: Int = 50,
-               @Query("order_by") order: String = "popular"): Single<Set<ImageEntity>>
+    fun getAll(
+        @Query("page") page: Int = 1,
+        @Query("per_page") countPerPage: Int = 50,
+        @Query("order_by") order: String = "popular"
+    ): Single<Set<ImageEntity>>
 
     @Headers(FIRST_HEADER, SECOND_HEADER)
     @GET("/search/photos")
-    fun search(@Query("query") query: String,
-               @Query("page") page: Int = 1,
-               @Query("per_page") countPerPage: Int = 50,
-               @Query("order_by") order: String = "popular"): Single<SearchResponse>
+    fun search(
+        @Query("query") query: String,
+        @Query("page") page: Int = 1,
+        @Query("per_page") countPerPage: Int = 50,
+        @Query("order_by") order: String = "popular"
+    ): Single<SearchResponse>
 
 }

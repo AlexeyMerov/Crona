@@ -22,7 +22,6 @@ abstract class BaseRecyclerAdapter<T : Any, VH : BaseViewHolder<T>> : RecyclerVi
     abstract fun proceedPayloads(payloads: MutableList<Any>, holder: VH, position: Int)
 }
 
-abstract class BaseViewHolder<in T : Any>(override val containerView: View)
-    : RecyclerView.ViewHolder(containerView), LayoutContainer {
+abstract class BaseViewHolder<in T : Any>(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
     abstract fun bind(currentItem: T)
 }

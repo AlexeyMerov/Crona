@@ -11,8 +11,8 @@ class ServerCommunicator(private val apiService: ApiService) : BaseServerCommuni
 
     fun searchImages(query: String, page: Int = 1): Single<LinkedHashSet<ImageEntity>> {
         return apiService.search(query, page)
-                .map { it.results }
-                .flatMap { Single.just(LinkedHashSet(it)) }.compose(singleTransformer())
+            .map { it.results }
+            .flatMap { Single.just(LinkedHashSet(it)) }.compose(singleTransformer())
     }
 
 }

@@ -28,7 +28,7 @@ class ImageRecyclerAdapter() : BaseRecyclerAdapter<ImageEntity, ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            ImageViewHolder(parent.inflate(R.layout.item_image))
+        ImageViewHolder(parent.inflate(R.layout.item_image))
 
     override fun getItemViewType(position: Int) = 0
 
@@ -52,14 +52,14 @@ class ImageRecyclerAdapter() : BaseRecyclerAdapter<ImageEntity, ViewHolder>() {
             super.bind(currentItem)
             containerView.apply {
                 glideRequests.setDefaultRequestOptions(RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
-                        .load(currentItem.urls.thumb)
-                        .dontTransform()
-                        .transition(withCrossFade())
-                        .placeholder(ColorDrawable(Color.parseColor(currentItem.color)))
-                        .error(ColorDrawable(Color.parseColor(currentItem.color)))
-                        .into(imageItem)
+                    .load(currentItem.urls.thumb)
+                    .dontTransform()
+                    .transition(withCrossFade())
+                    .placeholder(ColorDrawable(Color.parseColor(currentItem.color)))
+                    .error(ColorDrawable(Color.parseColor(currentItem.color)))
+                    .into(imageItem)
 
-                imageItem.setOnClickListener { onItemClicked.invoke(items.elementAt(adapterPosition), this) }
+                imageItem.setOnClickListener { onItemClicked.invoke(currentItem, this) }
             }
         }
     }
